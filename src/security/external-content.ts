@@ -8,6 +8,8 @@
  * system prompts or treated as trusted instructions.
  */
 
+import { emitSecurityEvent } from "./event-logger.js";
+
 /**
  * Patterns that may indicate prompt injection attempts.
  * These are logged for monitoring but content is still processed (wrapped safely).
@@ -195,6 +197,18 @@ export type WrapExternalContentOptions = {
  */
 export function wrapExternalContent(content: string, options: WrapExternalContentOptions): string {
   const { source, sender, subject, includeWarning = true } = options;
+
+  const suspiciousMatches = detectSuspiciousPatterns(content);
+  if (suspiciousMatches.length > 0) {
+    emitSecurityEvent({
+      eventType: "injection.detected",
+      timestamp: new Date().toISOString(),
+      severity: "warn",
+      action: "logged",
+      detail: `${suspiciousMatches.length} suspicious pattern(s) detected`,
+      meta: { patterns: suspiciousMatches, source },
+    });
+  }
 
   const sanitized = replaceMarkers(content);
   const sourceLabel = EXTERNAL_SOURCE_LABELS[source] ?? "External";

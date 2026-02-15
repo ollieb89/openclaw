@@ -1,4 +1,5 @@
 import type { AnyAgentTool } from "./tools/common.js";
+import { emitSecurityEvent } from "../security/event-logger.js";
 
 export type ToolProfileId = "minimal" | "coding" | "messaging" | "full";
 
@@ -108,7 +109,19 @@ export function applyOwnerOnlyToolPolicy(tools: AnyAgentTool[], senderIsOwner: b
   if (senderIsOwner) {
     return withGuard;
   }
-  return withGuard.filter((tool) => !isOwnerOnlyToolName(tool.name));
+  const filtered = withGuard.filter((tool) => !isOwnerOnlyToolName(tool.name));
+  const denied = tools.filter((tool) => isOwnerOnlyToolName(tool.name));
+  for (const tool of denied) {
+    emitSecurityEvent({
+      eventType: "tool.denied",
+      timestamp: new Date().toISOString(),
+      severity: "warn",
+      action: "blocked",
+      detail: tool.name,
+      meta: { toolName: tool.name, reason: "owner_only" },
+    });
+  }
+  return filtered;
 }
 
 export function normalizeToolList(list?: string[]) {

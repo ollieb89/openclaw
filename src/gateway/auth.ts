@@ -5,6 +5,7 @@ import type {
   GatewayTrustedProxyConfig,
 } from "../config/config.js";
 import { readTailscaleWhoisIdentity, type TailscaleWhoisIdentity } from "../infra/tailscale.js";
+import { emitSecurityEvent } from "../security/event-logger.js";
 import { safeEqualSecret } from "../security/secret-equal.js";
 import {
   AUTH_RATE_LIMIT_SCOPE_SHARED_SECRET,
@@ -297,12 +298,44 @@ export async function authorizeGatewayConnect(params: {
   const tailscaleWhois = params.tailscaleWhois ?? readTailscaleWhoisIdentity;
   const localDirect = isLocalDirectRequest(req, trustedProxies);
 
+  const emitAuthEvent = (result: GatewayAuthResult): GatewayAuthResult => {
+    if (result.rateLimited) {
+      emitSecurityEvent({
+        eventType: "auth.failure",
+        timestamp: new Date().toISOString(),
+        severity: "warn",
+        action: "rate_limited",
+        detail: "too many attempts",
+        meta: { retryAfterMs: result.retryAfterMs },
+      });
+    } else if (result.ok) {
+      emitSecurityEvent({
+        eventType: "auth.success",
+        timestamp: new Date().toISOString(),
+        severity: "info",
+        action: "allowed",
+        detail: result.method,
+        meta: { method: result.method },
+      });
+    } else {
+      emitSecurityEvent({
+        eventType: "auth.failure",
+        timestamp: new Date().toISOString(),
+        severity: "warn",
+        action: "blocked",
+        detail: result.reason,
+        meta: { method: auth.mode, reason: result.reason },
+      });
+    }
+    return result;
+  };
+
   if (auth.mode === "trusted-proxy") {
     if (!auth.trustedProxy) {
-      return { ok: false, reason: "trusted_proxy_config_missing" };
+      return emitAuthEvent({ ok: false, reason: "trusted_proxy_config_missing" });
     }
     if (!trustedProxies || trustedProxies.length === 0) {
-      return { ok: false, reason: "trusted_proxy_no_proxies_configured" };
+      return emitAuthEvent({ ok: false, reason: "trusted_proxy_no_proxies_configured" });
     }
 
     const result = authorizeTrustedProxy({
@@ -312,9 +345,9 @@ export async function authorizeGatewayConnect(params: {
     });
 
     if ("user" in result) {
-      return { ok: true, method: "trusted-proxy", user: result.user };
+      return emitAuthEvent({ ok: true, method: "trusted-proxy", user: result.user });
     }
-    return { ok: false, reason: result.reason };
+    return emitAuthEvent({ ok: false, reason: result.reason });
   }
 
   const limiter = params.rateLimiter;
@@ -324,12 +357,12 @@ export async function authorizeGatewayConnect(params: {
   if (limiter) {
     const rlCheck: RateLimitCheckResult = limiter.check(ip, rateLimitScope);
     if (!rlCheck.allowed) {
-      return {
+      return emitAuthEvent({
         ok: false,
         reason: "rate_limited",
         rateLimited: true,
         retryAfterMs: rlCheck.retryAfterMs,
-      };
+      });
     }
   }
 
@@ -340,47 +373,47 @@ export async function authorizeGatewayConnect(params: {
     });
     if (tailscaleCheck.ok) {
       limiter?.reset(ip, rateLimitScope);
-      return {
+      return emitAuthEvent({
         ok: true,
         method: "tailscale",
         user: tailscaleCheck.user.login,
-      };
+      });
     }
   }
 
   if (auth.mode === "token") {
     if (!auth.token) {
-      return { ok: false, reason: "token_missing_config" };
+      return emitAuthEvent({ ok: false, reason: "token_missing_config" });
     }
     if (!connectAuth?.token) {
       limiter?.recordFailure(ip, rateLimitScope);
-      return { ok: false, reason: "token_missing" };
+      return emitAuthEvent({ ok: false, reason: "token_missing" });
     }
     if (!safeEqualSecret(connectAuth.token, auth.token)) {
       limiter?.recordFailure(ip, rateLimitScope);
-      return { ok: false, reason: "token_mismatch" };
+      return emitAuthEvent({ ok: false, reason: "token_mismatch" });
     }
     limiter?.reset(ip, rateLimitScope);
-    return { ok: true, method: "token" };
+    return emitAuthEvent({ ok: true, method: "token" });
   }
 
   if (auth.mode === "password") {
     const password = connectAuth?.password;
     if (!auth.password) {
-      return { ok: false, reason: "password_missing_config" };
+      return emitAuthEvent({ ok: false, reason: "password_missing_config" });
     }
     if (!password) {
       limiter?.recordFailure(ip, rateLimitScope);
-      return { ok: false, reason: "password_missing" };
+      return emitAuthEvent({ ok: false, reason: "password_missing" });
     }
     if (!safeEqualSecret(password, auth.password)) {
       limiter?.recordFailure(ip, rateLimitScope);
-      return { ok: false, reason: "password_mismatch" };
+      return emitAuthEvent({ ok: false, reason: "password_mismatch" });
     }
     limiter?.reset(ip, rateLimitScope);
-    return { ok: true, method: "password" };
+    return emitAuthEvent({ ok: true, method: "password" });
   }
 
   limiter?.recordFailure(ip, rateLimitScope);
-  return { ok: false, reason: "unauthorized" };
+  return emitAuthEvent({ ok: false, reason: "unauthorized" });
 }
