@@ -72,37 +72,39 @@
 
 ## Out of Scope
 
-| Feature | Reason |
-|---------|--------|
-| End-to-end encryption of message content | Channel providers handle transport encryption; OpenClaw is a local gateway |
-| Formal security certification (SOC2, ISO 27001) | Practical hardening, not compliance exercise |
-| Rewriting Pi agent runtime | Proprietary dependency (`@mariozechner/pi-*`); must harden around it |
-| Mobile app security (iOS/Android/macOS) | Separate attack surface, different toolchain |
-| Local LLM-based prompt injection classifier | High latency (100-500ms), GPU/memory cost, second attack surface; use heuristics + optional API instead |
-| Full message content encryption at rest | Single-user local system where disk access = full compromise; use OS-level FDE instead |
-| Real-time toxicity/harm scoring | Personal assistant — owner decides what's appropriate; false positives on legitimate content |
-| Mutual TLS for channel connections | Channel APIs use their own auth; mTLS adds cert management burden with no benefit |
+| Feature                                         | Reason                                                                                                  |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| End-to-end encryption of message content        | Channel providers handle transport encryption; OpenClaw is a local gateway                              |
+| Formal security certification (SOC2, ISO 27001) | Practical hardening, not compliance exercise                                                            |
+| Rewriting Pi agent runtime                      | Proprietary dependency (`@mariozechner/pi-*`); must harden around it                                    |
+| Mobile app security (iOS/Android/macOS)         | Separate attack surface, different toolchain                                                            |
+| Local LLM-based prompt injection classifier     | High latency (100-500ms), GPU/memory cost, second attack surface; use heuristics + optional API instead |
+| Full message content encryption at rest         | Single-user local system where disk access = full compromise; use OS-level FDE instead                  |
+| Real-time toxicity/harm scoring                 | Personal assistant — owner decides what's appropriate; false positives on legitimate content            |
+| Mutual TLS for channel connections              | Channel APIs use their own auth; mTLS adds cert management burden with no benefit                       |
 
 ## Traceability
 
-| Requirement | Phase | Status |
-|-------------|-------|--------|
-| SLOG-01 | Phase 1 | Pending |
-| REPO-01 | Phase 1 | Pending |
-| TOOL-02 | Phase 1 | Pending |
-| INPT-01 | Phase 2 | Pending |
-| SESS-01 | Phase 2 | Pending |
-| PLUG-01 | Phase 3 | Pending |
-| PLUG-02 | Phase 3 | Pending |
-| OUTP-01 | Phase 4 | Pending |
-| TOOL-01 | Phase 4 | Pending |
-| INFR-01 | Phase 5 | Pending |
+| Requirement | Phase   | Status  |
+| ----------- | ------- | ------- |
+| SLOG-01     | Phase 1 | Pending |
+| REPO-01     | Phase 1 | Pending |
+| TOOL-02     | Phase 1 | Pending |
+| INPT-01     | Phase 2 | Pending |
+| SESS-01     | Phase 2 | Pending |
+| PLUG-01     | Phase 3 | Pending |
+| PLUG-02     | Phase 3 | Pending |
+| OUTP-01     | Phase 4 | Pending |
+| TOOL-01     | Phase 4 | Pending |
+| INFR-01     | Phase 5 | Pending |
 
 **Coverage:**
+
 - v1 requirements: 10 total
 - Mapped to phases: 10
 - Unmapped: 0
 
 ---
-*Requirements defined: 2026-02-15*
-*Last updated: 2026-02-15 after roadmap creation*
+
+_Requirements defined: 2026-02-15_
+_Last updated: 2026-02-15 after roadmap creation_
