@@ -29,12 +29,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. A CI check (pre-commit hook or lint rule) rejects commits containing API key patterns, tokens, or credential strings
   3. The `session_status` tool output shows API keys as `sk-pr... (52 chars)` format -- never full keys or trailing characters
   4. No committed source file in the repository contains hardcoded secrets, personal information, or sensitive configuration values
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
-- [ ] 01-03: TBD
+- [ ] 01-01-PLAN.md — Unify and fix API key masking (TOOL-02)
+- [ ] 01-02-PLAN.md — Security event logging and instrumentation (SLOG-01)
+- [ ] 01-03-PLAN.md — Repo secret scan and baseline audit (REPO-01)
 
 ### Phase 2: Input & Session Hardening
 **Goal**: Inbound messages are screened with channel-appropriate sensitivity and sessions cannot access each other's data
@@ -103,7 +103,7 @@ Note: Phase 3 and Phase 5 only depend on Phase 1, so they could execute in paral
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Repo Hygiene | 0/3 | Not started | - |
+| 1. Foundation & Repo Hygiene | 0/3 | Planned | - |
 | 2. Input & Session Hardening | 0/3 | Not started | - |
 | 3. Plugin Security | 0/2 | Not started | - |
 | 4. Output Controls & Execution Tracing | 0/3 | Not started | - |
