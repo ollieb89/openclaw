@@ -10,25 +10,25 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 ## Current Position
 
 Phase: 1 of 5 (Foundation & Repo Hygiene)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: Executing
-Last activity: 2026-02-15 — Completed 01-01 (API key masking)
+Last activity: 2026-02-15 — Completed 01-02 (Security event logging)
 
-Progress: [██░░░░░░░░] 7%
+Progress: [████░░░░░░] 13%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 1
-- Average duration: 5min
-- Total execution time: 0.08 hours
+- Total plans completed: 2
+- Average duration: 6min
+- Total execution time: 0.2 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 | ----- | ----- | ----- | -------- |
-| 01    | 1/3   | 5min  | 5min     |
+| 01    | 2/3   | 12min | 6min     |
 
 **Recent Trend:**
 
@@ -47,6 +47,7 @@ Recent decisions affecting current work:
 - [Roadmap]: 5-phase structure derived from 10 v1 requirements; Phase 3 (Plugin) and Phase 5 (Audit Infra) only depend on Phase 1, enabling parallel execution if needed
 - [Roadmap]: TOOL-02 (API key masking) placed in Phase 1 as a quick security win alongside logging foundation
 - [01-01]: Unified to prefix-only format (first 4 chars + length), re-exported from list.format.ts for backward compat
+- [01-02]: Used emitAuthEvent helper pattern in auth.ts to wrap all return points; instrumented applyOwnerOnlyToolPolicy for tool deny events; added injection detection to wrapExternalContent
 
 ### Pending Todos
 
@@ -60,5 +61,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-15
-Stopped at: Completed 01-01-PLAN.md
+Stopped at: Completed 01-02-PLAN.md
 Resume file: None
