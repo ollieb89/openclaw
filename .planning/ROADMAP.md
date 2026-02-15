@@ -51,13 +51,12 @@ Plans:
 2. A prompt injection attempt detected in a high-sensitivity channel triggers a security event (SLOG-01) and the configured response action (log, warn, or block)
 3. A tool call or direct memory access from Session A requesting Session B's transcript or memory returns an authorization error -- not the data
 4. Cross-session isolation holds even when sessions share the same agent runtime process
-   **Plans**: TBD
+   **Plans:** 2 plans
 
 Plans:
 
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
-- [ ] 02-03: TBD
+- [ ] 02-01-PLAN.md — Scored input detection with per-channel sensitivity config (INPT-01)
+- [ ] 02-02-PLAN.md — Cross-session data isolation enforcement (SESS-01)
 
 ### Phase 3: Plugin Security
 
@@ -120,7 +119,7 @@ Note: Phase 3 and Phase 5 only depend on Phase 1, so they could execute in paral
 | Phase                                  | Plans Complete | Status      | Completed |
 | -------------------------------------- | -------------- | ----------- | --------- |
 | 1. Foundation & Repo Hygiene           | 0/3            | Planned     | -         |
-| 2. Input & Session Hardening           | 0/3            | Not started | -         |
+| 2. Input & Session Hardening           | 0/2            | Planned     | -         |
 | 3. Plugin Security                     | 0/2            | Not started | -         |
 | 4. Output Controls & Execution Tracing | 0/3            | Not started | -         |
 | 5. Tamper-Evident Audit Infrastructure | 0/1            | Not started | -         |
