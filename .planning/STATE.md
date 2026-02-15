@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Inbound messages from any channel cannot manipulate the agent into leaking system prompts, accessing unauthorized tools, exfiltrating user data, or affecting other channels' sessions.
-**Current focus:** Phase 2: Input & Session Hardening
+**Current focus:** Phase 3: Plugin Security
 
 ## Current Position
 
-Phase: 2 of 5 (Input & Session Hardening)
-Plan: 2 of 2 in current phase
-Status: Phase 2 complete
-Last activity: 2026-02-15 — Completed 02-02 (Cross-session data isolation)
+Phase: 3 of 5 (Plugin Security)
+Plan: 1 of 2 in current phase
+Status: Executing phase 3
+Last activity: 2026-02-16 — Completed 03-01 (Workspace plugin consent gate)
 
-Progress: [██████████░░░░░░░░░░] 40%
+Progress: [████████████░░░░░░░░] 60%
 
 ## Performance Metrics
 
@@ -30,6 +30,7 @@ Progress: [██████████░░░░░░░░░░] 40%
 | ----- | ----- | ----- | -------- |
 | 01    | 3/3   | 19min | 6min     |
 | 02    | 2/2   | 12min | 6min     |
+| 03    | 1/2   | 3min  | 3min     |
 
 **Recent Trend:**
 
@@ -38,6 +39,7 @@ Progress: [██████████░░░░░░░░░░] 40%
 
 _Updated after each plan completion_
 | Phase 02 P01 | 9min | 2 tasks | 14 files |
+| Phase 03 P01 | 3min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -55,6 +57,7 @@ Recent decisions affecting current work:
 - [02-02]: Kept existing A2A checks alongside authorizeSessionAccess for defense in depth
 - [Phase 02]: Weighted scoring: patterns assigned 0.1-0.5 weights summed and clamped to 1.0, replacing binary match
 - [Phase 02]: Three sensitivity levels (lenient/moderate/strict) with threshold bands; hook/cron sessions bypass screening
+- [03-01]: Consent gate after enable-state but before module loading; legacy consent records (no source) allowed for backward compat
 
 ### Pending Todos
 
@@ -67,6 +70,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-15
-Stopped at: Completed 02-02-PLAN.md (Phase 2 complete)
+Last session: 2026-02-16
+Stopped at: Completed 03-01-PLAN.md
 Resume file: None
