@@ -1,6 +1,11 @@
 export type PluginEntryConfig = {
   enabled?: boolean;
   config?: Record<string, unknown>;
+  consent?: {
+    granted: boolean;
+    grantedAt?: string; // ISO 8601
+    source?: string; // filesystem path that was consented
+  };
 };
 
 export type PluginSlotsConfig = {
