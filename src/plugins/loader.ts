@@ -11,6 +11,7 @@ import type {
   PluginLogger,
 } from "./types.js";
 import { createSubsystemLogger } from "../logging/subsystem.js";
+import { emitSecurityEvent } from "../security/event-logger.js";
 import { resolveUserPath } from "../utils.js";
 import { clearPluginCommands } from "./commands.js";
 import {
@@ -20,6 +21,7 @@ import {
   resolveMemorySlotDecision,
   type NormalizedPluginsConfig,
 } from "./config-state.js";
+import { hasWorkspaceConsent } from "./consent.js";
 import { discoverOpenClawPlugins } from "./discovery.js";
 import { initializeGlobalHookRunner } from "./hook-runner-global.js";
 import { loadPluginManifestRegistry } from "./manifest-registry.js";
@@ -302,6 +304,31 @@ export function loadOpenClawPlugins(options: PluginLoadOptions = {}): PluginRegi
       registry.plugins.push(record);
       seenIds.set(pluginId, candidate.origin);
       continue;
+    }
+
+    if (candidate.origin === "workspace") {
+      const consentGranted = hasWorkspaceConsent(pluginId, candidate.source, normalized.entries);
+      if (!consentGranted) {
+        record.status = "disabled";
+        record.error = "workspace plugin requires consent";
+        registry.diagnostics.push({
+          level: "warn",
+          pluginId: record.id,
+          source: record.source,
+          message: "workspace plugin blocked: explicit consent required",
+        });
+        emitSecurityEvent({
+          eventType: "plugin.consent.blocked",
+          timestamp: new Date().toISOString(),
+          severity: "warn",
+          action: "blocked",
+          detail: `Workspace plugin "${pluginId}" blocked: no consent`,
+          meta: { pluginId, origin: "workspace", source: candidate.source },
+        });
+        registry.plugins.push(record);
+        seenIds.set(pluginId, candidate.origin);
+        continue;
+      }
     }
 
     if (!manifestRecord.configSchema) {
