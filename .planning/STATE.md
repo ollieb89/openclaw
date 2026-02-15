@@ -5,30 +5,31 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Inbound messages from any channel cannot manipulate the agent into leaking system prompts, accessing unauthorized tools, exfiltrating user data, or affecting other channels' sessions.
-**Current focus:** Phase 1: Foundation & Repo Hygiene
+**Current focus:** Phase 2: Input & Session Hardening
 
 ## Current Position
 
-Phase: 1 of 5 (Foundation & Repo Hygiene)
-Plan: 3 of 3 in current phase
-Status: Phase 1 complete
-Last activity: 2026-02-15 — Completed 01-03 (Secret scan & baseline audit)
+Phase: 2 of 5 (Input & Session Hardening)
+Plan: 2 of 2 in current phase
+Status: Phase 2 complete
+Last activity: 2026-02-15 — Completed 02-02 (Cross-session data isolation)
 
-Progress: [██████░░░░] 20%
+Progress: [██████████░░░░░░░░░░] 40%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 3
+- Total plans completed: 5
 - Average duration: 6min
-- Total execution time: 0.3 hours
+- Total execution time: 0.5 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 | ----- | ----- | ----- | -------- |
 | 01    | 3/3   | 19min | 6min     |
+| 02    | 2/2   | 12min | 6min     |
 
 **Recent Trend:**
 
@@ -49,6 +50,8 @@ Recent decisions affecting current work:
 - [01-01]: Unified to prefix-only format (first 4 chars + length), re-exported from list.format.ts for backward compat
 - [01-02]: Used emitAuthEvent helper pattern in auth.ts to wrap all return points; instrumented applyOwnerOnlyToolPolicy for tool deny events; added injection detection to wrapExternalContent
 - [01-03]: All 1769 detect-secrets findings verified as false positives; baseline updated to reflect current repo state
+- [02-02]: Used synthetic target session key for memory tool filtering since transcript files are UUID-named
+- [02-02]: Kept existing A2A checks alongside authorizeSessionAccess for defense in depth
 
 ### Pending Todos
 
@@ -62,5 +65,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-15
-Stopped at: Completed 01-03-PLAN.md (Phase 1 complete)
+Stopped at: Completed 02-02-PLAN.md (Phase 2 complete)
 Resume file: None
