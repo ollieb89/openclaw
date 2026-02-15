@@ -7,7 +7,9 @@ export type SecurityEventType =
   | "injection.detected"
   | "policy.violation"
   | "plugin.consent.blocked"
-  | "plugin.capability.denied";
+  | "plugin.capability.denied"
+  | "output.csp.stripped"
+  | "trace.tool.call";
 
 export type SecurityEventSeverity = "info" | "warn" | "critical";
 
