@@ -37,6 +37,7 @@ Progress: [██████████░░░░░░░░░░] 40%
 - Trend: -
 
 _Updated after each plan completion_
+| Phase 02 P01 | 9min | 2 tasks | 14 files |
 
 ## Accumulated Context
 
@@ -52,6 +53,8 @@ Recent decisions affecting current work:
 - [01-03]: All 1769 detect-secrets findings verified as false positives; baseline updated to reflect current repo state
 - [02-02]: Used synthetic target session key for memory tool filtering since transcript files are UUID-named
 - [02-02]: Kept existing A2A checks alongside authorizeSessionAccess for defense in depth
+- [Phase 02]: Weighted scoring: patterns assigned 0.1-0.5 weights summed and clamped to 1.0, replacing binary match
+- [Phase 02]: Three sensitivity levels (lenient/moderate/strict) with threshold bands; hook/cron sessions bypass screening
 
 ### Pending Todos
 
