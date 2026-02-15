@@ -10,19 +10,19 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 ## Current Position
 
 Phase: 3 of 5 (Plugin Security)
-Plan: 1 of 2 in current phase
-Status: Executing phase 3
-Last activity: 2026-02-16 — Completed 03-01 (Workspace plugin consent gate)
+Plan: 2 of 2 in current phase
+Status: Phase 3 complete
+Last activity: 2026-02-16 — Completed 03-02 (Plugin capability enforcement)
 
-Progress: [████████████░░░░░░░░] 60%
+Progress: [██████████████░░░░░░] 70%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 5
-- Average duration: 6min
-- Total execution time: 0.5 hours
+- Total plans completed: 6
+- Average duration: 5min
+- Total execution time: 0.6 hours
 
 **By Phase:**
 
@@ -30,7 +30,7 @@ Progress: [████████████░░░░░░░░] 60%
 | ----- | ----- | ----- | -------- |
 | 01    | 3/3   | 19min | 6min     |
 | 02    | 2/2   | 12min | 6min     |
-| 03    | 1/2   | 3min  | 3min     |
+| 03    | 2/2   | 8min  | 4min     |
 
 **Recent Trend:**
 
@@ -40,6 +40,7 @@ Progress: [████████████░░░░░░░░] 60%
 _Updated after each plan completion_
 | Phase 02 P01 | 9min | 2 tasks | 14 files |
 | Phase 03 P01 | 3min | 2 tasks | 5 files |
+| Phase 03 P02 | 5min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -58,6 +59,8 @@ Recent decisions affecting current work:
 - [Phase 02]: Weighted scoring: patterns assigned 0.1-0.5 weights summed and clamped to 1.0, replacing binary match
 - [Phase 02]: Three sensitivity levels (lenient/moderate/strict) with threshold bands; hook/cron sessions bypass screening
 - [03-01]: Consent gate after enable-state but before module loading; legacy consent records (no source) allowed for backward compat
+- [03-02]: Proxy-based capability enforcement preserving TypeScript types; legacy plugins without capabilities get full access with deprecation warning
+- [03-02]: Auto-inference of channels/providers capabilities from manifest fields
 
 ### Pending Todos
 
@@ -71,5 +74,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: Completed 03-01-PLAN.md
+Stopped at: Completed 03-02-PLAN.md (Phase 03 complete)
 Resume file: None
