@@ -18,6 +18,7 @@ export type PluginManifest = {
   description?: string;
   version?: string;
   uiHints?: Record<string, PluginConfigUiHint>;
+  capabilities?: string[];
 };
 
 export type PluginManifestLoadResult =
@@ -76,6 +77,8 @@ export function loadPluginManifest(rootDir: string): PluginManifestLoadResult {
   const providers = normalizeStringList(raw.providers);
   const skills = normalizeStringList(raw.skills);
 
+  const capabilities = normalizeStringList(raw.capabilities);
+
   let uiHints: Record<string, PluginConfigUiHint> | undefined;
   if (isRecord(raw.uiHints)) {
     uiHints = raw.uiHints as Record<string, PluginConfigUiHint>;
@@ -94,6 +97,7 @@ export function loadPluginManifest(rootDir: string): PluginManifestLoadResult {
       description,
       version,
       uiHints,
+      capabilities: capabilities.length > 0 ? capabilities : undefined,
     },
     manifestPath,
   };

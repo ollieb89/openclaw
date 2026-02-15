@@ -6,7 +6,8 @@ export type SecurityEventType =
   | "tool.denied"
   | "injection.detected"
   | "policy.violation"
-  | "plugin.consent.blocked";
+  | "plugin.consent.blocked"
+  | "plugin.capability.denied";
 
 export type SecurityEventSeverity = "info" | "warn" | "critical";
 
