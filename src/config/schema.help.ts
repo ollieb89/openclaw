@@ -132,6 +132,12 @@ export const FIELD_HELP: Record<string, string> = {
   "channels.mattermost.oncharPrefixes": 'Trigger prefixes for onchar mode (default: [">", "!"]).',
   "channels.mattermost.requireMention":
     "Require @mention in channels before responding (default: true).",
+  "security.inputDetection":
+    "Configure input screening sensitivity for prompt injection detection.",
+  "security.inputDetection.defaultSensitivity":
+    'Default sensitivity level for all channels ("lenient", "moderate", or "strict"). Default: "moderate".',
+  "security.inputDetection.channels":
+    "Per-channel sensitivity overrides keyed by channel name (case-insensitive).",
   "auth.profiles": "Named auth profiles (provider + mode + optional email).",
   "auth.order": "Ordered auth profile IDs per provider (used for automatic failover).",
   "auth.cooldowns.billingBackoffHours":

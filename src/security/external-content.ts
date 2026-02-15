@@ -11,35 +11,59 @@
 import { emitSecurityEvent } from "./event-logger.js";
 
 /**
- * Patterns that may indicate prompt injection attempts.
+ * Weighted patterns that may indicate prompt injection attempts.
+ * Each pattern has a weight (0.0-0.5) reflecting injection confidence.
  * These are logged for monitoring but content is still processed (wrapped safely).
  */
-const SUSPICIOUS_PATTERNS = [
-  /ignore\s+(all\s+)?(previous|prior|above)\s+(instructions?|prompts?)/i,
-  /disregard\s+(all\s+)?(previous|prior|above)/i,
-  /forget\s+(everything|all|your)\s+(instructions?|rules?|guidelines?)/i,
-  /you\s+are\s+now\s+(a|an)\s+/i,
-  /new\s+instructions?:/i,
-  /system\s*:?\s*(prompt|override|command)/i,
-  /\bexec\b.*command\s*=/i,
-  /elevated\s*=\s*true/i,
-  /rm\s+-rf/i,
-  /delete\s+all\s+(emails?|files?|data)/i,
-  /<\/?system>/i,
-  /\]\s*\n\s*\[?(system|assistant|user)\]?:/i,
+export type SuspiciousPattern = { pattern: RegExp; weight: number; label: string };
+
+const SUSPICIOUS_PATTERNS: SuspiciousPattern[] = [
+  // Strong injection indicators (0.4-0.5)
+  {
+    pattern: /ignore\s+(all\s+)?(previous|prior|above)\s+(instructions?|prompts?)/i,
+    weight: 0.5,
+    label: "ignore previous instructions",
+  },
+  {
+    pattern: /disregard\s+(all\s+)?(previous|prior|above)/i,
+    weight: 0.5,
+    label: "disregard previous",
+  },
+  {
+    pattern: /forget\s+(everything|all|your)\s+(instructions?|rules?|guidelines?)/i,
+    weight: 0.4,
+    label: "forget instructions",
+  },
+  { pattern: /system\s*:?\s*(prompt|override|command)/i, weight: 0.4, label: "system override" },
+  // Medium indicators (0.3)
+  { pattern: /you\s+are\s+now\s+(a|an)\s+/i, weight: 0.3, label: "role reassignment" },
+  { pattern: /new\s+instructions?:/i, weight: 0.3, label: "new instructions" },
+  // XML/role markers (0.3)
+  { pattern: /<\/?system>/i, weight: 0.3, label: "system tag" },
+  { pattern: /\]\s*\n\s*\[?(system|assistant|user)\]?:/i, weight: 0.3, label: "role marker" },
+  // Weak indicators (0.1-0.2)
+  { pattern: /\bexec\b.*command\s*=/i, weight: 0.2, label: "exec command" },
+  { pattern: /elevated\s*=\s*true/i, weight: 0.2, label: "elevated flag" },
+  { pattern: /rm\s+-rf/i, weight: 0.1, label: "rm -rf" },
+  { pattern: /delete\s+all\s+(emails?|files?|data)/i, weight: 0.1, label: "delete all" },
 ];
+
+export type DetectSuspiciousPatternsResult = { matches: string[]; score: number };
 
 /**
  * Check if content contains suspicious patterns that may indicate injection.
+ * Returns matched pattern labels and a composite score clamped to [0.0, 1.0].
  */
-export function detectSuspiciousPatterns(content: string): string[] {
+export function detectSuspiciousPatterns(content: string): DetectSuspiciousPatternsResult {
   const matches: string[] = [];
-  for (const pattern of SUSPICIOUS_PATTERNS) {
+  let score = 0;
+  for (const { pattern, weight, label } of SUSPICIOUS_PATTERNS) {
     if (pattern.test(content)) {
-      matches.push(pattern.source);
+      matches.push(label);
+      score += weight;
     }
   }
-  return matches;
+  return { matches, score: Math.min(score, 1.0) };
 }
 
 /**
@@ -198,7 +222,7 @@ export type WrapExternalContentOptions = {
 export function wrapExternalContent(content: string, options: WrapExternalContentOptions): string {
   const { source, sender, subject, includeWarning = true } = options;
 
-  const suspiciousMatches = detectSuspiciousPatterns(content);
+  const { matches: suspiciousMatches } = detectSuspiciousPatterns(content);
   if (suspiciousMatches.length > 0) {
     emitSecurityEvent({
       eventType: "injection.detected",

@@ -5,6 +5,7 @@ import { ApprovalsSchema } from "./zod-schema.approvals.js";
 import { HexColorSchema, ModelsConfigSchema } from "./zod-schema.core.js";
 import { HookMappingSchema, HooksGmailSchema, InternalHooksSchema } from "./zod-schema.hooks.js";
 import { ChannelsSchema } from "./zod-schema.providers.js";
+import { SecurityConfigSchema } from "./zod-schema.security.js";
 import { sensitive } from "./zod-schema.sensitive.js";
 import {
   CommandsSchema,
@@ -549,6 +550,7 @@ export const OpenClawSchema = z
       .strict()
       .optional(),
     memory: MemorySchema,
+    security: SecurityConfigSchema,
     skills: z
       .object({
         allowBundled: z.array(z.string()).optional(),

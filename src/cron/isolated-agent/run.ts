@@ -490,7 +490,7 @@ export async function runCronIsolatedAgentTurn(params: {
 
   if (isExternalHook) {
     // Log suspicious patterns for security monitoring
-    const suspiciousPatterns = detectSuspiciousPatterns(params.message);
+    const { matches: suspiciousPatterns } = detectSuspiciousPatterns(params.message);
     if (suspiciousPatterns.length > 0) {
       logWarn(
         `[security] Suspicious patterns detected in external hook content ` +
