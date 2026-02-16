@@ -5,24 +5,24 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Inbound messages from any channel cannot manipulate the agent into leaking system prompts, accessing unauthorized tools, exfiltrating user data, or affecting other channels' sessions.
-**Current focus:** Phase 4: Output Controls & Execution Tracing
+**Current focus:** Phase 5: Tamper-Evident Audit Infrastructure
 
 ## Current Position
 
-Phase: 4 of 5 (Output Controls & Execution Tracing)
-Plan: 2 of 2 in current phase
-Status: Phase complete
-Last activity: 2026-02-16 — Completed 04-02 (Execution tracing)
+Phase: 5 of 5 (Tamper-Evident Audit Infrastructure)
+Plan: 1 of 2 in current phase
+Status: In progress
+Last activity: 2026-02-16 — Completed 05-01 (Hash-chained audit log)
 
-Progress: [████████████████░░░░] 80%
+Progress: [████████████████░░░░] 89%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 7
+- Total plans completed: 8
 - Average duration: 5min
-- Total execution time: 0.65 hours
+- Total execution time: 0.73 hours
 
 **By Phase:**
 
@@ -32,6 +32,7 @@ Progress: [████████████████░░░░] 80%
 | 02    | 2/2   | 12min | 6min     |
 | 03    | 2/2   | 8min  | 4min     |
 | 04    | 2/2   | 10min | 5min     |
+| 05    | 1/2   | 5min  | 5min     |
 
 **Recent Trend:**
 
@@ -44,6 +45,7 @@ _Updated after each plan completion_
 | Phase 03 P02 | 5min | 2 tasks | 7 files |
 | Phase 04 P01 | 3min | 2 tasks | 5 files |
 | Phase 04 P02 | 7min | 2 tasks | 11 files |
+| Phase 05 P01 | 5min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -68,6 +70,9 @@ Recent decisions affecting current work:
 - [04-01]: CSP placed after sanitizeUserFacingText, before LINE directives — fail-open delivery with fail-loud logging
 - [04-02]: Run-keyed trace storage in separate Map parallel to agent-events to avoid circular imports
 - [04-02]: RunId threaded through tool creation chain for spawn-time trace context lookup
+- [05-01]: Promise-chain serialization for concurrent audit write safety (same pattern as cron/run-log.ts)
+- [05-01]: Explicit key ordering in canonicalize() to prevent hash mismatches from object construction order
+- [05-01]: Truncated last line treated as warning not failure in verifier (crash tolerance)
 
 ### Pending Todos
 
@@ -81,5 +86,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: Completed 04-02-PLAN.md (Phase 04 complete)
+Stopped at: Completed 05-01-PLAN.md
 Resume file: None
