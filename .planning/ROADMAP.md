@@ -57,12 +57,12 @@ Plans:
 3. Agent model profiles live test passes — switching between configured model profiles works end-to-end
 4. Gateway CLI backend live test passes — CLI commands execute correctly against a running gateway
 5. Gateway model profiles live test passes — profile configuration is correctly loaded and applied
-   **Plans**: TBD
+   **Plans:** 2 plans
 
 Plans:
 
-- [ ] 07-01: TBD
-- [ ] 07-02: TBD
+- [ ] 07-01-PLAN.md — Diagnose and fix all six agent provider live tests (Anthropic, Gemini, MiniMax, Zai, Pi embedded, model profiles)
+- [ ] 07-02-PLAN.md — Diagnose and fix both gateway live tests (CLI backend, model profiles)
 
 ### Phase 8: Browser, Media & WhatsApp
 
@@ -94,5 +94,5 @@ Phase 6 first. Phases 7 and 8 can execute in parallel after Phase 6 completes.
 | 4. Output Controls & Execution Tracing | v1.0      | 2/2            | Complete    | 2026-02-16 |
 | 5. Tamper-Evident Audit Infrastructure | v1.0      | 2/2            | Complete    | 2026-02-16 |
 | 6. Test Infrastructure                 | v1.1      | 0/2            | Planned     | -          |
-| 7. Agent & Gateway Live Tests          | v1.1      | 0/?            | Not started | -          |
+| 7. Agent & Gateway Live Tests          | v1.1      | 0/2            | Planned     | -          |
 | 8. Browser, Media & WhatsApp           | v1.1      | 0/?            | Not started | -          |
