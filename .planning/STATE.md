@@ -63,6 +63,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: Phases 6 & 7 complete, .env loading fix committed
-Resume with: `/gsd:discuss-phase 8` or `/gsd:plan-phase 8`
-Resume file: `.planning/ROADMAP.md`
+Stopped at: Phase 8 context gathered
+Resume with: `/gsd:plan-phase 8`
+Resume file: `.planning/phases/08-browser-media-whatsapp/08-CONTEXT.md`
