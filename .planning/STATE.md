@@ -49,5 +49,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: v1.1 roadmap created
+Stopped at: Phase 6 context gathered
 Resume with: `/gsd:plan-phase 6`
+Resume file: `.planning/phases/06-test-infrastructure/06-CONTEXT.md`
