@@ -1,8 +1,9 @@
 import { type Api, completeSimple, type Model } from "@mariozechner/pi-ai";
 import { Type } from "@sinclair/typebox";
-import { describe, expect, it } from "vitest";
+import { expect, it } from "vitest";
 import { loadConfig } from "../config/config.js";
 import { isTruthyEnvValue } from "../infra/env.js";
+import { describeLive } from "../test-utils/live-test-helpers.js";
 import { resolveOpenClawAgentDir } from "./agent-paths.js";
 import {
   collectAnthropicApiKeys,
@@ -15,11 +16,13 @@ import { ensureOpenClawModelsJson } from "./models-config.js";
 import { isRateLimitErrorMessage } from "./pi-embedded-helpers/errors.js";
 import { discoverAuthStorage, discoverModels } from "./pi-model-discovery.js";
 
-const LIVE = isTruthyEnvValue(process.env.LIVE) || isTruthyEnvValue(process.env.OPENCLAW_LIVE_TEST);
 const DIRECT_ENABLED = Boolean(process.env.OPENCLAW_LIVE_MODELS?.trim());
 const REQUIRE_PROFILE_KEYS = isTruthyEnvValue(process.env.OPENCLAW_LIVE_REQUIRE_PROFILE_KEYS);
 
-const describeLive = LIVE ? describe : describe.skip;
+const runSuite = describeLive({
+  name: "live models (profile keys)",
+  envVars: [],
+});
 
 function parseProviderFilter(raw?: string): Set<string> | null {
   const trimmed = raw?.trim();
@@ -176,7 +179,7 @@ async function completeOkWithRetry(params: {
   return await runOnce(256);
 }
 
-describeLive("live models (profile keys)", () => {
+runSuite("live models (profile keys)", () => {
   it(
     "completes across selected models",
     async () => {

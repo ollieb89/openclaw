@@ -1,13 +1,22 @@
 import { completeSimple, getModel } from "@mariozechner/pi-ai";
-import { describe, expect, it } from "vitest";
-import { isTruthyEnvValue } from "../infra/env.js";
+import { expect, it } from "vitest";
+import { describeLive } from "../test-utils/live-test-helpers.js";
 
 const ZAI_KEY = process.env.ZAI_API_KEY ?? process.env.Z_AI_API_KEY ?? "";
-const LIVE = isTruthyEnvValue(process.env.ZAI_LIVE_TEST) || isTruthyEnvValue(process.env.LIVE);
 
-const describeLive = LIVE && ZAI_KEY ? describe : describe.skip;
+const runSuite = describeLive({
+  name: "zai live",
+  envVars: [
+    { name: "ZAI_LIVE_TEST", value: process.env.ZAI_LIVE_TEST, required: false },
+    {
+      name: "ZAI_API_KEY",
+      value: process.env.ZAI_API_KEY ?? process.env.Z_AI_API_KEY,
+      required: true,
+    },
+  ],
+});
 
-describeLive("zai live", () => {
+runSuite("zai live", () => {
   it("returns assistant text", async () => {
     const model = getModel("zai", "glm-4.7");
     const res = await completeSimple(

@@ -3,19 +3,28 @@ import fs from "node:fs/promises";
 import { createServer } from "node:net";
 import os from "node:os";
 import path from "node:path";
-import { describe, expect, it } from "vitest";
+import { expect, it } from "vitest";
 import { parseModelRef } from "../agents/model-selection.js";
 import { loadConfig } from "../config/config.js";
 import { isTruthyEnvValue } from "../infra/env.js";
+import { describeLive } from "../test-utils/live-test-helpers.js";
 import { GatewayClient } from "./client.js";
 import { renderCatNoncePngBase64 } from "./live-image-probe.js";
 import { startGatewayServer } from "./server.js";
 
-const LIVE = isTruthyEnvValue(process.env.LIVE) || isTruthyEnvValue(process.env.OPENCLAW_LIVE_TEST);
-const CLI_LIVE = isTruthyEnvValue(process.env.OPENCLAW_LIVE_CLI_BACKEND);
 const CLI_IMAGE = isTruthyEnvValue(process.env.OPENCLAW_LIVE_CLI_BACKEND_IMAGE_PROBE);
 const CLI_RESUME = isTruthyEnvValue(process.env.OPENCLAW_LIVE_CLI_BACKEND_RESUME_PROBE);
-const describeLive = LIVE && CLI_LIVE ? describe : describe.skip;
+
+const runSuite = describeLive({
+  name: "gateway live (cli backend)",
+  envVars: [
+    {
+      name: "OPENCLAW_LIVE_CLI_BACKEND",
+      value: process.env.OPENCLAW_LIVE_CLI_BACKEND,
+      required: true,
+    },
+  ],
+});
 
 const DEFAULT_MODEL = "claude-cli/claude-sonnet-4-5";
 const DEFAULT_CLAUDE_ARGS = ["-p", "--output-format", "json", "--dangerously-skip-permissions"];
@@ -201,7 +210,7 @@ async function connectClient(params: { url: string; token: string }) {
   });
 }
 
-describeLive("gateway live (cli backend)", () => {
+runSuite("gateway live (cli backend)", () => {
   it("runs the agent pipeline against the local CLI backend", async () => {
     const previous = {
       configPath: process.env.OPENCLAW_CONFIG_PATH,

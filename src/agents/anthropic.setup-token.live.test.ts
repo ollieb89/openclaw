@@ -3,13 +3,13 @@ import { randomUUID } from "node:crypto";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { describe, expect, it } from "vitest";
+import { expect, it } from "vitest";
 import {
   ANTHROPIC_SETUP_TOKEN_PREFIX,
   validateAnthropicSetupToken,
 } from "../commands/auth-token.js";
 import { loadConfig } from "../config/config.js";
-import { isTruthyEnvValue } from "../infra/env.js";
+import { describeLive } from "../test-utils/live-test-helpers.js";
 import { resolveOpenClawAgentDir } from "./agent-paths.js";
 import {
   type AuthProfileCredential,
@@ -21,14 +21,22 @@ import { normalizeProviderId, parseModelRef } from "./model-selection.js";
 import { ensureOpenClawModelsJson } from "./models-config.js";
 import { discoverAuthStorage, discoverModels } from "./pi-model-discovery.js";
 
-const LIVE = isTruthyEnvValue(process.env.LIVE) || isTruthyEnvValue(process.env.OPENCLAW_LIVE_TEST);
 const SETUP_TOKEN_RAW = process.env.OPENCLAW_LIVE_SETUP_TOKEN?.trim() ?? "";
 const SETUP_TOKEN_VALUE = process.env.OPENCLAW_LIVE_SETUP_TOKEN_VALUE?.trim() ?? "";
 const SETUP_TOKEN_PROFILE = process.env.OPENCLAW_LIVE_SETUP_TOKEN_PROFILE?.trim() ?? "";
 const SETUP_TOKEN_MODEL = process.env.OPENCLAW_LIVE_SETUP_TOKEN_MODEL?.trim() ?? "";
 
-const ENABLED = LIVE && Boolean(SETUP_TOKEN_RAW || SETUP_TOKEN_VALUE || SETUP_TOKEN_PROFILE);
-const describeLive = ENABLED ? describe : describe.skip;
+const hasTokenSource = Boolean(SETUP_TOKEN_RAW || SETUP_TOKEN_VALUE || SETUP_TOKEN_PROFILE);
+const runSuite = describeLive({
+  name: "live anthropic setup-token",
+  envVars: [
+    {
+      name: "OPENCLAW_LIVE_SETUP_TOKEN|VALUE|PROFILE",
+      value: hasTokenSource ? "present" : undefined,
+      required: true,
+    },
+  ],
+});
 
 type TokenSource = {
   agentDir: string;
@@ -155,7 +163,7 @@ function pickModel(models: Array<Model<Api>>, raw?: string): Model<Api> | null {
   return models[0] ?? null;
 }
 
-describeLive("live anthropic setup-token", () => {
+runSuite("live anthropic setup-token", () => {
   it(
     "completes using a setup-token profile",
     async () => {

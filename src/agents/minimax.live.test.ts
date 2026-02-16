@@ -1,15 +1,20 @@
 import { completeSimple, type Model } from "@mariozechner/pi-ai";
-import { describe, expect, it } from "vitest";
-import { isTruthyEnvValue } from "../infra/env.js";
+import { expect, it } from "vitest";
+import { describeLive } from "../test-utils/live-test-helpers.js";
 
 const MINIMAX_KEY = process.env.MINIMAX_API_KEY ?? "";
 const MINIMAX_BASE_URL = process.env.MINIMAX_BASE_URL?.trim() || "https://api.minimax.io/anthropic";
 const MINIMAX_MODEL = process.env.MINIMAX_MODEL?.trim() || "MiniMax-M2.1";
-const LIVE = isTruthyEnvValue(process.env.MINIMAX_LIVE_TEST) || isTruthyEnvValue(process.env.LIVE);
 
-const describeLive = LIVE && MINIMAX_KEY ? describe : describe.skip;
+const runSuite = describeLive({
+  name: "minimax live",
+  envVars: [
+    { name: "MINIMAX_LIVE_TEST", value: process.env.MINIMAX_LIVE_TEST, required: false },
+    { name: "MINIMAX_API_KEY", value: process.env.MINIMAX_API_KEY, required: true },
+  ],
+});
 
-describeLive("minimax live", () => {
+runSuite("minimax live", () => {
   it("returns assistant text", async () => {
     const model: Model<"anthropic-messages"> = {
       id: MINIMAX_MODEL,

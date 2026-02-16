@@ -1,13 +1,18 @@
 import { completeSimple, getModel } from "@mariozechner/pi-ai";
-import { describe, expect, it } from "vitest";
-import { isTruthyEnvValue } from "../infra/env.js";
+import { expect, it } from "vitest";
+import { describeLive } from "../test-utils/live-test-helpers.js";
 
 const GEMINI_KEY = process.env.GEMINI_API_KEY ?? "";
-const LIVE = isTruthyEnvValue(process.env.GEMINI_LIVE_TEST) || isTruthyEnvValue(process.env.LIVE);
 
-const describeLive = LIVE && GEMINI_KEY ? describe : describe.skip;
+const runSuite = describeLive({
+  name: "gemini live switch",
+  envVars: [
+    { name: "GEMINI_LIVE_TEST", value: process.env.GEMINI_LIVE_TEST, required: false },
+    { name: "GEMINI_API_KEY", value: process.env.GEMINI_API_KEY, required: true },
+  ],
+});
 
-describeLive("gemini live switch", () => {
+runSuite("gemini live switch", () => {
   it("handles unsigned tool calls from Antigravity when switching to Gemini 3", async () => {
     const now = Date.now();
     const model = getModel("google", "gemini-3-pro-preview");

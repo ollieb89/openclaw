@@ -1,9 +1,18 @@
-import { describe, it } from "vitest";
-import { isTruthyEnvValue } from "../infra/env.js";
+import { it } from "vitest";
+import { describeLive } from "../test-utils/live-test-helpers.js";
 
-const LIVE = isTruthyEnvValue(process.env.LIVE) || isTruthyEnvValue(process.env.OPENCLAW_LIVE_TEST);
 const CDP_URL = process.env.OPENCLAW_LIVE_BROWSER_CDP_URL?.trim() || "";
-const describeLive = LIVE && CDP_URL ? describe : describe.skip;
+
+const runSuite = describeLive({
+  name: "browser (live): remote CDP tab persistence",
+  envVars: [
+    {
+      name: "OPENCLAW_LIVE_BROWSER_CDP_URL",
+      value: process.env.OPENCLAW_LIVE_BROWSER_CDP_URL,
+      required: true,
+    },
+  ],
+});
 
 async function waitFor(
   fn: () => Promise<boolean>,
@@ -19,7 +28,7 @@ async function waitFor(
   throw new Error("timed out");
 }
 
-describeLive("browser (live): remote CDP tab persistence", () => {
+runSuite("browser (live): remote CDP tab persistence", () => {
   it("creates, lists, focuses, and closes tabs via Playwright", { timeout: 60_000 }, async () => {
     const pw = await import("./pw-ai.js");
     await pw.closePlaywrightBrowserConnection().catch(() => {});

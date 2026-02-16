@@ -1,16 +1,21 @@
 import type { Model } from "@mariozechner/pi-ai";
 import { getModel, streamSimple } from "@mariozechner/pi-ai";
-import { describe, expect, it } from "vitest";
+import { expect, it } from "vitest";
 import type { OpenClawConfig } from "../config/config.js";
-import { isTruthyEnvValue } from "../infra/env.js";
+import { describeLive } from "../test-utils/live-test-helpers.js";
 import { applyExtraParamsToAgent } from "./pi-embedded-runner.js";
 
 const OPENAI_KEY = process.env.OPENAI_API_KEY ?? "";
-const LIVE = isTruthyEnvValue(process.env.OPENAI_LIVE_TEST) || isTruthyEnvValue(process.env.LIVE);
 
-const describeLive = LIVE && OPENAI_KEY ? describe : describe.skip;
+const runSuite = describeLive({
+  name: "pi embedded extra params (live)",
+  envVars: [
+    { name: "OPENAI_LIVE_TEST", value: process.env.OPENAI_LIVE_TEST, required: false },
+    { name: "OPENAI_API_KEY", value: process.env.OPENAI_API_KEY, required: true },
+  ],
+});
 
-describeLive("pi embedded extra params (live)", () => {
+runSuite("pi embedded extra params (live)", () => {
   it("applies config maxTokens to openai streamFn", async () => {
     const model = getModel("openai", "gpt-5.2") as Model<"openai-completions">;
 

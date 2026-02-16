@@ -4,7 +4,7 @@ import fs from "node:fs/promises";
 import { createServer } from "node:net";
 import os from "node:os";
 import path from "node:path";
-import { describe, it } from "vitest";
+import { it } from "vitest";
 import type { OpenClawConfig, ModelProviderConfig } from "../config/types.js";
 import { resolveOpenClawAgentDir } from "../agents/agent-paths.js";
 import { resolveAgentWorkspaceDir } from "../agents/agent-scope.js";
@@ -25,12 +25,12 @@ import { discoverAuthStorage, discoverModels } from "../agents/pi-model-discover
 import { loadConfig } from "../config/config.js";
 import { isTruthyEnvValue } from "../infra/env.js";
 import { DEFAULT_AGENT_ID } from "../routing/session-key.js";
+import { describeLive } from "../test-utils/live-test-helpers.js";
 import { GATEWAY_CLIENT_MODES, GATEWAY_CLIENT_NAMES } from "../utils/message-channel.js";
 import { GatewayClient } from "./client.js";
 import { renderCatNoncePngBase64 } from "./live-image-probe.js";
 import { startGatewayServer } from "./server.js";
 
-const LIVE = isTruthyEnvValue(process.env.LIVE) || isTruthyEnvValue(process.env.OPENCLAW_LIVE_TEST);
 const GATEWAY_LIVE = isTruthyEnvValue(process.env.OPENCLAW_LIVE_GATEWAY);
 const ZAI_FALLBACK = isTruthyEnvValue(process.env.OPENCLAW_LIVE_GATEWAY_ZAI_FALLBACK);
 const PROVIDERS = parseFilter(process.env.OPENCLAW_LIVE_GATEWAY_PROVIDERS);
@@ -39,7 +39,12 @@ const THINKING_TAG_RE = /<\s*\/?\s*(?:think(?:ing)?|thought|antthinking)\s*>/i;
 const FINAL_TAG_RE = /<\s*\/?\s*final\s*>/i;
 const ANTHROPIC_MAGIC_STRING_TRIGGER_REFUSAL = "ANTHROPIC_MAGIC_STRING_TRIGGER_REFUSAL";
 
-const describeLive = LIVE || GATEWAY_LIVE ? describe : describe.skip;
+const runSuite = describeLive({
+  name: "gateway live (dev agent, profile keys)",
+  envVars: [
+    { name: "OPENCLAW_LIVE_GATEWAY", value: process.env.OPENCLAW_LIVE_GATEWAY, required: false },
+  ],
+});
 
 function parseFilter(raw?: string): Set<string> | null {
   const trimmed = raw?.trim();
@@ -1009,7 +1014,7 @@ async function runGatewayModelSuite(params: GatewayModelSuiteParams) {
   }
 }
 
-describeLive("gateway live (dev agent, profile keys)", () => {
+runSuite("gateway live (dev agent, profile keys)", () => {
   it(
     "runs meaningful prompts across models with available keys",
     async () => {
