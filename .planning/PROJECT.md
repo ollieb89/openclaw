@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A security hardening initiative for OpenClaw, a personal AI assistant gateway that connects to messaging channels and routes messages through an AI agent runtime. The project hardens the application against prompt injection, tool abuse, data exfiltration, and cross-channel leakage — while keeping all channel and LLM provider integrations fully functional. It also cleans the repo of any exposed personal information or secrets.
+A security hardening initiative for OpenClaw, a personal AI assistant gateway that connects to messaging channels and routes messages through an AI agent runtime. v1.0 delivered defense-in-depth across input screening, session isolation, plugin sandboxing, output filtering, execution tracing, and tamper-evident audit logging — while keeping all channel and LLM provider integrations fully functional.
 
 ## Core Value
 
@@ -21,17 +21,20 @@ Inbound messages from any channel cannot manipulate the agent into leaking syste
 - ✓ Tool policy system (allowlists/blocklists) — existing
 - ✓ Gateway authentication (token/password) — existing
 - ✓ SSRF/shell injection guards (recent hardening in 2026.2.14+) — existing
+- ✓ Typed security events for auth, tool calls, injection, policy violations (SLOG-01) — v1.0
+- ✓ No secrets in committed source; pre-commit hook prevents future commits (REPO-01) — v1.0
+- ✓ API keys shown as prefix + length only, never trailing chars (TOOL-02) — v1.0
+- ✓ Configurable per-channel input detection sensitivity (INPT-01) — v1.0
+- ✓ Cross-session isolation at data access layer (SESS-01) — v1.0
+- ✓ Workspace plugins require explicit consent before loading (PLUG-01) — v1.0
+- ✓ Plugins declare capabilities; only declared APIs exposed (PLUG-02) — v1.0
+- ✓ Per-channel Content Security Policy for agent responses (OUTP-01) — v1.0
+- ✓ W3C Trace Context propagation through tool execution chains (TOOL-01) — v1.0
+- ✓ Hash-chained append-only security event log with tamper detection (INFR-01) — v1.0
 
 ### Active
 
-- [ ] Prompt injection defense for inbound messages across all channels
-- [ ] Tool call validation and abuse prevention beyond current allowlists
-- [ ] System prompt / config / identity data exfiltration prevention
-- [ ] Cross-channel session isolation (one channel can't access another's data)
-- [ ] Output filtering to prevent leaking internal state in responses
-- [ ] Repo hygiene: remove any hardcoded secrets, personal info, or sensitive config from code and git history
-- [ ] Input sanitization layer for all channel adapters
-- [ ] Audit logging for security-relevant events (tool calls, auth failures, suspicious prompts)
+(None — define next milestone requirements with `/gsd:new-milestone`)
 
 ### Out of Scope
 
@@ -39,14 +42,33 @@ Inbound messages from any channel cannot manipulate the agent into leaking syste
 - Formal security certification (SOC2, ISO 27001) — this is practical hardening, not compliance
 - Rewriting the agent runtime (Pi framework) — we harden around it, not inside it
 - Mobile app security (iOS/Android/macOS) — separate concern, different attack surface
+- Local LLM-based prompt injection classifier — high latency, GPU cost, second attack surface
+- Full message content encryption at rest — single-user local system, use OS-level FDE
+- Real-time toxicity/harm scoring — personal assistant, owner decides what's appropriate
+- Mutual TLS for channel connections — channel APIs use their own auth
 
 ## Context
 
-- OpenClaw has been receiving public attention and criticism for prompt injection vulnerabilities
-- The codebase already has some security measures (SSRF guards, tool policies, sandbox isolation) but they're reactive and incomplete
-- Codebase concerns audit flagged: type system gaps allowing implicit leaks, 1048 type assertions, silent failures in message extraction, unbounded memory growth, and missing security test coverage for edge cases
-- The gateway runs as a long-lived process handling multiple channels concurrently — session isolation is critical
-- Recent commits show security fixes are happening reactively (Discord role allowlist bug, various hardening patches) rather than systematically
+Shipped v1.0 Security Hardening with ~10K LOC TypeScript across security artifacts.
+115 tests added, 0 regressions across existing test suite.
+Tech stack: Node.js 22, TypeScript ESM, bun, Vitest, tsdown.
+
+Key security artifacts: `src/security/` (events, input screening, session access, output policy, trace context, audit log), `src/plugins/` (consent, capabilities), `src/utils/mask-api-key.ts`.
+
+All 10 v1 requirements satisfied and verified by milestone audit.
+
+## Key Decisions
+
+| Decision | Rationale | Outcome |
+| --- | --- | --- |
+| Harden around Pi framework, not inside it | Proprietary dependency, can't modify | ✓ Good — all hardening works at boundaries |
+| Balanced approach (security vs UX) | User wants practical resilience, not lockdown | ✓ Good — fail-open delivery with fail-loud logging |
+| Systematic over reactive | Current pattern of reactive fixes isn't scaling | ✓ Good — 5-phase structured approach delivered |
+| Weighted scoring for input detection | Binary match too noisy; graduated thresholds needed | ✓ Good — 3 sensitivity levels with configurable thresholds |
+| Proxy-based capability enforcement | Preserves TypeScript types; runtime enforcement | ✓ Good — legacy plugins get full access with deprecation warning |
+| Promise-chain serialization for audit writes | Concurrent write safety without locks | ✓ Good — same proven pattern as cron/run-log.ts |
+| Non-blocking startup verification | Avoid delaying gateway boot | ✓ Good — .then() pattern with tamper alerting |
+| Run-keyed trace storage | Avoid circular imports with agent-events | ✓ Good — parallel Map works cleanly |
 
 ## Constraints
 
@@ -56,13 +78,6 @@ Inbound messages from any channel cannot manipulate the agent into leaking syste
 - **Runtime**: Node.js >= 22, TypeScript ESM, bun package manager
 - **Testing**: Security tests must be automated and run in CI (Vitest)
 
-## Key Decisions
-
-| Decision | Rationale | Outcome |
-|----------|-----------|---------|
-| Harden around Pi framework, not inside it | Proprietary dependency, can't modify | — Pending |
-| Balanced approach (security vs UX) | User wants practical resilience, not lockdown | — Pending |
-| Systematic over reactive | Current pattern of reactive fixes isn't scaling | — Pending |
-
 ---
-*Last updated: 2026-02-15 after initialization*
+
+_Last updated: 2026-02-16 after v1.0 milestone_
