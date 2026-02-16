@@ -1,8 +1,8 @@
-# OpenClaw Security Hardening
+# OpenClaw
 
 ## What This Is
 
-A security hardening initiative for OpenClaw, a personal AI assistant gateway that connects to messaging channels and routes messages through an AI agent runtime. v1.0 delivered defense-in-depth across input screening, session isolation, plugin sandboxing, output filtering, execution tracing, and tamper-evident audit logging — while keeping all channel and LLM provider integrations fully functional.
+A personal AI assistant gateway that connects to messaging channels (WhatsApp, Telegram, Slack, Discord, Signal, iMessage, and more) and routes messages through a Pi agent runtime. v1.0 delivered security hardening (input screening, session isolation, plugin sandboxing, output filtering, tracing, audit logging). v1.1 focuses on live testing stabilization — getting all automated live tests green, WhatsApp end-to-end working, and improving test infrastructure.
 
 ## Core Value
 
@@ -34,7 +34,14 @@ Inbound messages from any channel cannot manipulate the agent into leaking syste
 
 ### Active
 
-(None — define next milestone requirements with `/gsd:new-milestone`)
+## Current Milestone: v1.1 Live Testing & Stabilization
+
+**Goal:** All live tests pass, WhatsApp works end-to-end, live test infrastructure improved for ongoing reliability.
+
+**Target features:**
+- Fix all failing automated live tests
+- WhatsApp end-to-end message flow working
+- Improved live test infrastructure (coverage, reliability, developer experience)
 
 ### Out of Scope
 
@@ -53,9 +60,9 @@ Shipped v1.0 Security Hardening with ~10K LOC TypeScript across security artifac
 115 tests added, 0 regressions across existing test suite.
 Tech stack: Node.js 22, TypeScript ESM, bun, Vitest, tsdown.
 
-Key security artifacts: `src/security/` (events, input screening, session access, output policy, trace context, audit log), `src/plugins/` (consent, capabilities), `src/utils/mask-api-key.ts`.
+Key security artifacts: `src/security/`, `src/plugins/` (consent, capabilities), `src/utils/mask-api-key.ts`.
 
-All 10 v1 requirements satisfied and verified by milestone audit.
+10 live test files exist covering: agent providers (Anthropic, Gemini, MiniMax, Zai), browser sessions (Browserless), gateway CLI, model profiles, and Deepgram audio. Current pass/fail state unknown — discovery is part of v1.1.
 
 ## Key Decisions
 
@@ -80,4 +87,4 @@ All 10 v1 requirements satisfied and verified by milestone audit.
 
 ---
 
-_Last updated: 2026-02-16 after v1.0 milestone_
+_Last updated: 2026-02-16 after v1.1 milestone started_
