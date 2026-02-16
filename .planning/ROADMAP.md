@@ -103,11 +103,12 @@ Plans:
 1. Each security event log entry includes a hash of the previous entry, forming a verifiable chain
 2. Running a CLI command (e.g., `openclaw security verify-log`) checks the full hash chain and reports whether any entries have been modified, deleted, or inserted
 3. On gateway startup, the hash chain integrity is automatically verified and a warning is emitted if tampering is detected
-   **Plans**: TBD
+   **Plans:** 2 plans
 
 Plans:
 
-- [ ] 05-01: TBD
+- [ ] 05-01-PLAN.md — Hash-chained audit log writer, verification logic, and event-logger wiring
+- [ ] 05-02-PLAN.md — CLI verify-log command and gateway startup verification hook
 
 ## Progress
 
@@ -121,4 +122,4 @@ Note: Phase 3 and Phase 5 only depend on Phase 1, so they could execute in paral
 | 2. Input & Session Hardening           | 0/2            | Planned     | -         |
 | 3. Plugin Security                     | 0/2            | Not started | -         |
 | 4. Output Controls & Execution Tracing | 0/2            | Planned     | -         |
-| 5. Tamper-Evident Audit Infrastructure | 0/1            | Not started | -         |
+| 5. Tamper-Evident Audit Infrastructure | 0/2            | Planned     | -         |
