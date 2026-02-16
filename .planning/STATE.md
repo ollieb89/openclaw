@@ -63,6 +63,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: Completed 07-02-PLAN.md (Phase 7 fully complete)
-Resume with: `/gsd:plan-phase 8` or `/gsd:execute-phase 8`
-Resume file: `.planning/phases/07-agent-gateway-live-tests/07-02-SUMMARY.md`
+Stopped at: Phases 6 & 7 complete, .env loading fix committed
+Resume with: `/gsd:discuss-phase 8` or `/gsd:plan-phase 8`
+Resume file: `.planning/ROADMAP.md`

@@ -22,8 +22,8 @@
 
 **Milestone Goal:** All live tests pass, WhatsApp works end-to-end, live test infrastructure improved for ongoing reliability.
 
-- [ ] **Phase 6: Test Infrastructure** — Clear diagnostics, graceful skips, and isolated test execution
-- [ ] **Phase 7: Agent & Gateway Live Tests** — All agent provider and gateway live tests green
+- [x] **Phase 6: Test Infrastructure** — Clear diagnostics, graceful skips, and isolated test execution
+- [x] **Phase 7: Agent & Gateway Live Tests** — All agent provider and gateway live tests green
 - [ ] **Phase 8: Browser, Media & WhatsApp** — Browser sessions, audio transcription, and WhatsApp e2e working
 
 ## Phase Details
@@ -42,8 +42,8 @@
 
 Plans:
 
-- [ ] 06-01-PLAN.md — Shared live test helpers (skip messaging, error classification, retry) + refactor all live tests
-- [ ] 06-02-PLAN.md — Custom Vitest reporter for live test diagnostics + wire into config
+- [x] 06-01-PLAN.md — Shared live test helpers (skip messaging, error classification, retry) + refactor all live tests
+- [x] 06-02-PLAN.md — Custom Vitest reporter for live test diagnostics + wire into config
 
 ### Phase 7: Agent & Gateway Live Tests
 
@@ -61,8 +61,8 @@ Plans:
 
 Plans:
 
-- [ ] 07-01-PLAN.md — Diagnose and fix all six agent provider live tests (Anthropic, Gemini, MiniMax, Zai, Pi embedded, model profiles)
-- [ ] 07-02-PLAN.md — Diagnose and fix both gateway live tests (CLI backend, model profiles)
+- [x] 07-01-PLAN.md — Diagnose and fix all six agent provider live tests (Anthropic, Gemini, MiniMax, Zai, Pi embedded, model profiles)
+- [x] 07-02-PLAN.md — Diagnose and fix both gateway live tests (CLI backend, model profiles)
 
 ### Phase 8: Browser, Media & WhatsApp
 
@@ -93,6 +93,6 @@ Phase 6 first. Phases 7 and 8 can execute in parallel after Phase 6 completes.
 | 3. Plugin Security                     | v1.0      | 2/2            | Complete    | 2026-02-16 |
 | 4. Output Controls & Execution Tracing | v1.0      | 2/2            | Complete    | 2026-02-16 |
 | 5. Tamper-Evident Audit Infrastructure | v1.0      | 2/2            | Complete    | 2026-02-16 |
-| 6. Test Infrastructure                 | v1.1      | 0/2            | Planned     | -          |
-| 7. Agent & Gateway Live Tests          | v1.1      | 0/2            | Planned     | -          |
+| 6. Test Infrastructure                 | v1.1      | 2/2            | Complete    | 2026-02-16 |
+| 7. Agent & Gateway Live Tests          | v1.1      | 2/2            | Complete    | 2026-02-16 |
 | 8. Browser, Media & WhatsApp           | v1.1      | 0/?            | Not started | -          |
