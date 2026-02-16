@@ -64,22 +64,21 @@ Plans:
 - [x] 07-01-PLAN.md — Diagnose and fix all six agent provider live tests (Anthropic, Gemini, MiniMax, Zai, Pi embedded, model profiles)
 - [x] 07-02-PLAN.md — Diagnose and fix both gateway live tests (CLI backend, model profiles)
 
-### Phase 8: Browser, Media & WhatsApp
+### Phase 8: Browser, Media & Telegram
 
-**Goal**: External service integrations (Browserless, Deepgram, WhatsApp) work end-to-end
+**Goal**: External service integrations (Browserless CDP, Telegram) work end-to-end
 **Depends on**: Phase 6
-**Requirements**: BMED-01, BMED-02, WHAP-01
+**Requirements**: BMED-01, WHAP-01 (Telegram replaces WhatsApp; BMED-02 Deepgram deferred)
 **Success Criteria** (what must be TRUE):
 
 1. Browserless CDP session live test passes — agent can spawn a browser session, navigate, and return results
-2. Deepgram audio transcription live test passes — audio input is transcribed and returned to the agent
-3. A WhatsApp message sent to OpenClaw receives an agent-generated reply back through WhatsApp
-   **Plans**: TBD
+2. Telegram bot connectivity and message sending live test passes — bot token valid, messages delivered to target chat
+   **Plans:** 2 plans
 
 Plans:
 
-- [ ] 08-01: TBD
-- [ ] 08-02: TBD
+- [ ] 08-01-PLAN.md — Verify Browserless CDP live test against local Docker instance
+- [ ] 08-02-PLAN.md — Create Telegram e2e live test (bot connectivity + send)
 
 ## Progress
 
