@@ -37,4 +37,13 @@ export function logGatewayStartup(params: {
   if (params.isNixMode) {
     params.log.info("gateway: running in Nix mode (config managed externally)");
   }
+
+  // Log OCCC orchestration dashboard links if available.
+  const occcPort = process.env.OCCC_DASHBOARD_PORT ?? "6987";
+  const httpScheme = params.tlsEnabled ? "https" : "http";
+  const occcProxyUrl = `${httpScheme}://${formatHost(primaryHost)}:${params.port}/occc`;
+  const occcDirectUrl = `http://localhost:${occcPort}`;
+  params.log.info(`OCCC dashboard: ${occcProxyUrl} (proxy) · ${occcDirectUrl} (direct)`, {
+    consoleMessage: `OCCC dashboard: ${chalk.cyan(occcProxyUrl)} (proxy) · ${chalk.cyan(occcDirectUrl)} (direct)`,
+  });
 }

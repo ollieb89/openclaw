@@ -239,6 +239,14 @@ const entries: SubCliEntry[] = [
       mod.registerCompletionCli(program);
     },
   },
+  {
+    name: "propose",
+    description: "Generate scored topology proposals for a given outcome",
+    register: async (program) => {
+      const mod = await import("../propose-cli.js");
+      mod.registerProposeCli(program);
+    },
+  },
 ];
 
 export function getSubCliEntries(): SubCliEntry[] {

@@ -1,0 +1,15 @@
+{
+  "id": "orchestration-bridge",
+  "name": "Orchestration Bridge",
+  "description": "Unix socket bridge for routing OpenClaw orchestration events to the gateway.",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "socketPath": {
+        "type": "string",
+        "description": "Path to the Unix socket for event delivery"
+      }
+    }
+  }
+}

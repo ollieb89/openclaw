@@ -597,20 +597,46 @@ export function createGatewayHttpServer(opts: {
   return httpServer;
 }
 
+export const ACP_WS_PATH = "/v1/acp";
+
 export function attachGatewayUpgradeHandler(opts: {
   httpServer: HttpServer;
   wss: WebSocketServer;
+  acpWss?: WebSocketServer;
   canvasHost: CanvasHostHandler | null;
   clients: Set<GatewayWsClient>;
   resolvedAuth: ResolvedGatewayAuth;
   /** Optional rate limiter for auth brute-force protection. */
   rateLimiter?: AuthRateLimiter;
 }) {
-  const { httpServer, wss, canvasHost, clients, resolvedAuth, rateLimiter } = opts;
+  const { httpServer, wss, acpWss, canvasHost, clients, resolvedAuth, rateLimiter } = opts;
   httpServer.on("upgrade", (req, socket, head) => {
     void (async () => {
+      const url = new URL(req.url ?? "/", "http://localhost");
+
+      // Route /v1/acp to the dedicated ACP WebSocket server
+      if (url.pathname === ACP_WS_PATH && acpWss) {
+        const configSnapshot = loadConfig();
+        const trustedProxies = configSnapshot.gateway?.trustedProxies ?? [];
+        const authResult = await authorizeGatewayConnect({
+          auth: resolvedAuth,
+          connectAuth: null,
+          req,
+          trustedProxies,
+          rateLimiter,
+        });
+        if (!authResult.ok) {
+          writeUpgradeAuthFailure(socket, authResult);
+          socket.destroy();
+          return;
+        }
+        acpWss.handleUpgrade(req, socket, head, (ws) => {
+          acpWss.emit("connection", ws, req);
+        });
+        return;
+      }
+
       if (canvasHost) {
-        const url = new URL(req.url ?? "/", "http://localhost");
         if (url.pathname === CANVAS_WS_PATH) {
           const configSnapshot = loadConfig();
           const trustedProxies = configSnapshot.gateway?.trustedProxies ?? [];

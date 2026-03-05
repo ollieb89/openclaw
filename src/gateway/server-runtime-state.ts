@@ -26,7 +26,11 @@ import {
   createToolEventRecipientRegistry,
 } from "./server-chat.js";
 import { MAX_PAYLOAD_BYTES } from "./server-constants.js";
-import { attachGatewayUpgradeHandler, createGatewayHttpServer } from "./server-http.js";
+import {
+  attachGatewayUpgradeHandler,
+  createGatewayHttpServer,
+  ACP_WS_PATH,
+} from "./server-http.js";
 import { createGatewayHooksRequestHandler } from "./server/hooks.js";
 import { listenGatewayHttpServer } from "./server/http-listen.js";
 import { createGatewayPluginRequestHandler } from "./server/plugins-http.js";
@@ -61,6 +65,7 @@ export async function createGatewayRuntimeState(params: {
   httpServers: HttpServer[];
   httpBindHosts: string[];
   wss: WebSocketServer;
+  acpWss: WebSocketServer;
   clients: Set<GatewayWsClient>;
   broadcast: GatewayBroadcastFn;
   broadcastToConnIds: GatewayBroadcastToConnIdsFn;
@@ -160,10 +165,15 @@ export async function createGatewayRuntimeState(params: {
     noServer: true,
     maxPayload: MAX_PAYLOAD_BYTES,
   });
+  const acpWss = new WebSocketServer({
+    noServer: true,
+    maxPayload: MAX_PAYLOAD_BYTES,
+  });
   for (const server of httpServers) {
     attachGatewayUpgradeHandler({
       httpServer: server,
       wss,
+      acpWss,
       canvasHost,
       clients,
       resolvedAuth: params.resolvedAuth,
@@ -188,6 +198,7 @@ export async function createGatewayRuntimeState(params: {
     httpServers,
     httpBindHosts,
     wss,
+    acpWss,
     clients,
     broadcast,
     broadcastToConnIds,
